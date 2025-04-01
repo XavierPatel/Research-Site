@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- connect css and javasctip here -->
+<title>Catch the Creatures!</title>
+<!-- move style to style.css file -->
+<style>
+* {
+margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html, body {
+height: 100%;
+overflow: hidden;
+background: linear-gradient(to bottom, #001d3d, #003566);
+cursor: none;
+font-family: 'Segoe UI', sans-serif;
+}
+
+.scoreboard {
+position: absolute;
+top: 20px;
+left: 50%;
+transform: translateX(-50%);
+color: #ffffff;
+font-size: 1.5rem;
+text-shadow: 0 0 10px #000;
+z-index: 20;
+}
+
+.ocean-creature {
+position: absolute;
+font-size: 50px;
+animation: float 6s ease-in-out infinite;
+cursor: pointer;
+opacity: 0.95;
+z-index: 5;
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-20px); }
+}
+
+.bubble {
+position: absolute;
+width: 10px;
+height: 10px;
+background: rgba(255, 255, 255, 0.4);
+border-radius: 50%;
+animation: rise 4s ease-out forwards;
+pointer-events: none;
+z-index: 3;
+}
+
+@keyframes rise {
+from { transform: translateY(0); opacity: 1; }
+to { transform: translateY(-600px); opacity: 0; }
+}
+
+.diver {
+position: absolute;
+font-size: 70px;
+transform: translate(-50%, -50%);
+pointer-events: none;
+z-index: 10;
+transition: transform 0.05s ease;
+}
+
+.end-screen {
+display: none;
+position: absolute;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background-color: rgba(0, 0, 0, 0.8);
+color: #fff;
+font-size: 2rem;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+z-index: 99;
+}
+
+.end-screen button {
+margin-top: 20px;
+padding: 10px 20px;
+font-size: 1rem;
+cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="scoreboard">
+Score: <span id="score">0</span> | Time Left: <span id="timer">60</span>s
+</div>
+
+<div class="diver" id="diver">🧑‍🚀</div>
+
+<div class="end-screen" id="endScreen">
+<div id="finalScore">You caught 0 creatures!</div>
+<button onclick="restartGame()">Play Again</button>
+</div>
+
+<!-- move javascript to index.js -->
+<script>
+const diver = document.getElementById('diver');
+const scoreEl = document.getElementById('score');
+const timerEl = document.getElementById('timer');
+const endScreen = document.getElementById('endScreen');
+const finalScoreEl = document.getElementById('finalScore');
+
+let score = 0;
+let timeLeft = 60;
+let gameInterval;
+let timerInterval;
+
+// Emojis for creatures
+const creatureEmojis = [
+'🐠', // Fish
+'🦑', // Octopus
+'🐙', // Squid
+'🐢', // Turtle
+'🐋', // Whale
+];
+
+document.addEventListener('mousemove', (e) => {
+diver.style.left = e.clientX + 'px';
+diver.style.top = e.clientY + 'px';
+});
+
+document.addEventListener('click', (e) => {
+for (let i = 0; i < 5; i++) {
+const bubble = document.createElement('div');
+bubble.className = 'bubble';
+const size = Math.random() * 10 + 10;
+bubble.style.width = bubble.style.height = size + 'px';
+bubble.style.left = (e.clientX + Math.random() * 20 - 10) + 'px';
+bubble.style.top = (e.clientY + Math.random() * 20 - 10) + 'px';
+document.body.appendChild(bubble);
+setTimeout(() => bubble.remove(), 4000);
+}
+});
+
+function spawnCreature() {
+const creature = document.createElement('div');
+creature.className = 'ocean-creature';
+creature.style.top = `${Math.random() * 80 + 10}%`;
+creature.style.left = `${Math.random() * 90}%`;
+creature.textContent = creatureEmojis[Math.floor(Math.random() * creatureEmojis.length)];
+creature.addEventListener('click', () => {
+score++;
+scoreEl.textContent = score;
+creature.remove();
+});
+
+document.body.appendChild(creature);
+setTimeout(() => creature.remove(), 8000);
+}
+
+function startGame() {
+score = 0;
+timeLeft = 60;
+scoreEl.textContent = score;
+timerEl.textContent = timeLeft;
+endScreen.style.display = 'none';
+
+gameInterval = setInterval(spawnCreature, 800);
+timerInterval = setInterval(() => {
+timeLeft--;
+timerEl.textContent = timeLeft;
+if (timeLeft <= 0) {
+clearInterval(gameInterval);
+clearInterval(timerInterval);
+showEndScreen();
+}
+}, 1000);
+}
+
+function showEndScreen() {
+finalScoreEl.textContent = `You caught ${score} creature${score !== 1 ? 's' : ''}!`;
+endScreen.style.display = 'flex';
+}
+
+function restartGame() {
+document.querySelectorAll('.ocean-creature').forEach(c => c.remove());
+startGame();
+}
+
+// Start on load
+startGame();
+</script>
+</body>
+</html>
