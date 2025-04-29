@@ -60,7 +60,7 @@ from { transform: translateY(0); opacity: 1; }
 to { transform: translateY(-600px); opacity: 0; }
 }
 
-.diver {
+.Hook {
 position: absolute;
 font-size: 70px;
 transform: translate(-50%, -50%);
@@ -97,7 +97,7 @@ cursor: pointer;
 Score: <span id="score">0</span> | Time Left: <span id="timer">60</span>s
 </div>
 
-<div class="diver" id="diver">🧑‍🚀</div>
+<div class="Hook" id="Hook">🪝</div>
 
 <div class="end-screen" id="endScreen">
 <div id="finalScore">You caught 0 creatures!</div>
@@ -106,7 +106,7 @@ Score: <span id="score">0</span> | Time Left: <span id="timer">60</span>s
 
 <!-- move javascript to index.js -->
 <script>
-const diver = document.getElementById('diver');
+const Hook = document.getElementById('Hook');
 const scoreEl = document.getElementById('score');
 const timerEl = document.getElementById('timer');
 const endScreen = document.getElementById('endScreen');
@@ -127,8 +127,8 @@ const creatureEmojis = [
 ];
 
 document.addEventListener('mousemove', (e) => {
-diver.style.left = e.clientX + 'px';
-diver.style.top = e.clientY + 'px';
+Hook.style.left = e.clientX + 'px';
+Hook.style.top = e.clientY + 'px';
 });
 
 document.addEventListener('click', (e) => {
